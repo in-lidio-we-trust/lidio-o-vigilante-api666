@@ -12,24 +12,16 @@ class CSVRequest(BaseModel):
     body: str
 
 @app.post("/fileCsvToXlsx")
-async def fileCsvToXlsx(file: Union[UploadFile, None] = None, json_data: Union[dict, None] = None):
-    if json_data is not None:
-        try:
-            print(json_data)
-            return {"csv_received": True}
-        except Exception as e:
-            raise HTTPException(status_code=422, detail=str(e))
+async def fileCsvToXlsx(file:UploadFile):
+    if not file.filename.endswith(".csv"):
+        return { "error": "Not a csv file"}
 
-    elif file is not None:
-        if not file.filename.endswith(".csv"):
-            return { "error": "Not a csv file"}
-        else:
-            csv_file = pd.read_csv(file.file)
-            resultadoExcel = pd.ExcelWriter(file.filename.replace(".csv", ".xlsx"), engine='xlsxwriter')
-            csv_file.to_excel(resultadoExcel, index=None)
-            resultadoExcel.save()
+    csv_file = pd.read_csv(file.file)
+    resultadoExcel = pd.ExcelWriter(file.filename.replace(".csv", ".xlsx"), engine='xlsxwriter')
+    csv_file.to_excel(resultadoExcel, index=None)
+    resultadoExcel.save()
 
-            return FileResponse(file.filename.replace(".csv", ".xlsx"))
+    return FileResponse(file.filename.replace(".csv", ".xlsx"))
 
 @app.post("/jsonCsvToXlsx")
 async def jsonCsvToXlsx(csv_request: CSVRequest):
