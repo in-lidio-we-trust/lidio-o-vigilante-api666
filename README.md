@@ -1,7 +1,9 @@
-Pip install nesses: 
-- fastapi
-- "uvicorn[standard]"
-- python-multipart
+Instalar dependencias:
+```pip install -r requirements.txt```
 
-Rode localmente com: 
+Rode localmente para desenvolvimento com: 
 ```uvicorn main:app --reload```
+
+Rode em producao com:
+## A definir com a parte do heroku
+
